@@ -4,24 +4,9 @@ import { Button } from "./ui/button.jsx";
 import { useNavigate } from "react-router-dom";
 
 export function WorldMapDemo() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
   return (
     <div className="py-12 bg-zinc-900 w-full relative">
       {/* Logout Button - Top Right Corner */}
-      <div className="absolute top-4 right-4 z-10">
-        <Button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow"
-        >
-          Log Out
-        </Button>
-      </div>
 
       <div className="max-w-7xl mx-auto text-center">
         <p className="font-bold text-xl md:text-4xl text-white">

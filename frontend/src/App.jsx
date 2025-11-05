@@ -5,6 +5,7 @@ import { Login } from './auth/Login'
 import { Signup } from './auth/Signup'
 import { CodeEditor } from './Pages/CodeEditor'
 import { JoinRoom } from './Pages/JoinRoom'
+import ProtectedRoute from './components/ProtectedRoute'
 import { ToastContainer } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,11 +24,19 @@ const appRouter = createBrowserRouter([
   },
   {
     path: '/editor/:roomId',
-    element: <CodeEditor />
+    element: (
+      <ProtectedRoute>
+        <CodeEditor />
+      </ProtectedRoute>
+    )
   },
   {
     path: '/joinroom',
-    element: <JoinRoom />
+    element: (
+      <ProtectedRoute>
+        <JoinRoom />
+      </ProtectedRoute>
+    )
   },
 ])
 export const App = () => {

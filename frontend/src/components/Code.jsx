@@ -1,5 +1,6 @@
 import Editor from "@monaco-editor/react";
 
+const GEMINI_API_KEY = "AIzaSyCjJy24ZoVKR7Qv8csqrwGNw1qLFXq1jmY";
 
 export const Code = ({ code, setCode, language, setLanguage, filename }) => {
   const handleGeminiSuggestion = async () => {
@@ -8,7 +9,7 @@ export const Code = ({ code, setCode, language, setLanguage, filename }) => {
     console.log("Prompt sent to Gemini:", prompt);
     try {
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: "POST",
           headers: {
@@ -23,7 +24,6 @@ export const Code = ({ code, setCode, language, setLanguage, filename }) => {
           }),
         }
       );
-      
 
       const data = await res.json();
       const suggestion = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
@@ -33,7 +33,7 @@ export const Code = ({ code, setCode, language, setLanguage, filename }) => {
       }).trim();
 
       if (cleaned) {
-        setCode(cleaned); // 🔥 Replaces the entire editor content
+        setCode(cleaned);
       }
     } catch (err) {
       console.error("Gemini suggestion error:", err);
@@ -41,13 +41,13 @@ export const Code = ({ code, setCode, language, setLanguage, filename }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-zinc-900 text-[#EAEAEA] p-4">
+    <div className="flex-1 flex flex-col bg-[#1A1A1A] text-[#FFFFFF] p-4">
       {/* Language Selector */}
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-4">
-          <label className="text-lg font-semibold">Language:</label>
+          <label className="text-sm font-semibold tracking-wide text-[#FFFFFF]/80">LANGUAGE:</label>
           <select
-            className="bg-zinc-700 text-[#EAEAEA] border border-zinc-700 rounded-lg px-3 py-1"
+            className="bg-[#0D0D0D] text-[#FFFFFF] border border-[#1E90FF]/50 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00FF85] transition-all duration-300"
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
           >
@@ -60,21 +60,21 @@ export const Code = ({ code, setCode, language, setLanguage, filename }) => {
 
         <button
           onClick={handleGeminiSuggestion}
-          className="bg-[#7E3AF2] px-4 py-1 rounded-lg hover:bg-purple-600 transition"
+          className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#FF0099] to-[#1E90FF] text-[#FFFFFF] font-bold hover:from-[#FF0099]/90 hover:to-[#1E90FF]/90 hover:shadow-lg hover:shadow-[#FF0099]/25 transform hover:-translate-y-0.5 transition-all duration-300"
         >
-          ✨ Suggestion
+          ✨ AI Suggestion
         </button>
       </div>
 
       {/* Filename Display */}
       {filename && (
-        <p className="text-sm text-gray-400 mb-2">📂 Editing: {filename}</p>
+        <p className="text-sm text-[#FFFFFF]/60 mb-2 px-2">📂 Editing: <span className="text-[#00FF85]">{filename}</span></p>
       )}
 
       {/* Code Editor */}
-      <div className="flex-1 border border-zinc-700 rounded-lg overflow-hidden h-full">
+      <div className="flex-1 border border-[#1E90FF]/30 rounded-xl overflow-hidden shadow-lg">
         <Editor
-          height="400px"
+          height="67vh"
           theme="vs-dark"
           language={language}
           value={code}
@@ -82,9 +82,12 @@ export const Code = ({ code, setCode, language, setLanguage, filename }) => {
           options={{
             fontSize: 14,
             minimap: { enabled: false },
-            suggestOnTriggerCharacters: false,
-            quickSuggestions: false,
-            wordBasedSuggestions: false,
+            suggestOnTriggerCharacters: true,
+            quickSuggestions: { other: true, comments: false, strings: true },
+            wordBasedSuggestions: true,
+            fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+            lineHeight: 24,
+            padding: { top: 16, bottom: 16 },
           }}
         />
       </div>

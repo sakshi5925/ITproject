@@ -7,6 +7,7 @@ import { Input } from "./ui/input";
 import { MdDeleteForever } from "react-icons/md";
 import { FaDownload } from "react-icons/fa";
 import { IoIosCreate } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 
 export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, activeFile, setActiveFile }) => {
@@ -16,6 +17,7 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
   const [newFilename, setNewFilename] = useState("");
   const user = localStorage.getItem("token");
   const decodedUser = JSON.parse(atob(user.split(".")[1]));
+  const navigate = useNavigate();
 
   // ! Fetched Collaborator
   useEffect(() => {
@@ -44,7 +46,7 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
 
         const data = await response.json();
         console.log(data.files);
-        setFiles(data.files);  // Set the array of files in state
+        setFiles(data.files);
       } catch (error) {
         console.error("Error fetching files:", error);
       }
@@ -60,8 +62,6 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
 
     const reader = new FileReader();
     reader.onload = async (e) => {
-      // console.log("File content:", e.target.result);
-
       const fileContent = e.target.result;
       try {
         const response = await fetch("http://localhost:3000/api/rooms/file/upload", {
@@ -70,12 +70,12 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
           body: JSON.stringify({
             filename: file.name,
             content: fileContent,
-            owner: decodedUser.id, // Replace with actual user ID
-            roomId, // Ensure the file is associated with the room
+            owner: decodedUser.id,
+            roomId,
           }),
         });
 
-        const data = await response.json(); // Convert response to JSON
+        const data = await response.json();
 
         if (!response.ok) {
           throw new Error(data.message || "File upload failed");
@@ -83,7 +83,6 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
 
         toast.success("File uploaded successfully!");
         setFiles((prevFiles) => [...prevFiles, data.savedFile]);
-        // handleCodeChange(fileContent);
         setActiveFile(data.savedFile._id);
         setCode(fileContent);
       } catch (error) {
@@ -96,11 +95,9 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
 
   //Handles file selection
   const handleFileClick = async (file) => {
-
     try {
       const response = await fetch(`http://localhost:3000/api/rooms/file/specificFile/${file._id}`);
-
-      const data = await response.json(); // Convert response to JSON
+      const data = await response.json();
       if (!response.ok) throw new Error("Failed to fetch single File");
       setActiveFile(data.file._id);
       setCode(data.file.content);
@@ -111,11 +108,11 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
   };
 
   useEffect(() => {
-    // console.log("Updated Active File:", activeFile);
   }, [activeFile]);
+
   // Function to handle file download
   const handleDownload = () => {
-    console.log("Code to download:", code); // Check the code content
+    console.log("Code to download:", code);
     if (!code) {
       alert("No code to download!");
       return;
@@ -125,15 +122,14 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
 
-    // Set the download filename based on the language
     const extension = language === 'javascript' ? 'js' :
       language === 'python' ? 'py' :
         language === 'c' ? 'c' :
-          language === 'cpp' ? 'cpp' : 'txt'; // Default to .txt if no match
+          language === 'cpp' ? 'cpp' : 'txt';
 
-    link.download = `code.${extension}`; // Use a default filename based on the language
+    link.download = `code.${extension}`;
     link.click();
-    URL.revokeObjectURL(link.href); // Clean up
+    URL.revokeObjectURL(link.href);
   };
 
   // create New File
@@ -172,7 +168,6 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
     }
   };
 
-
   const handleDeleteFile = async (fileId) => {
     if (!fileId) {
       console.error("No file ID provided.");
@@ -192,7 +187,6 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
 
       toast.success("File deleted successfully");
 
-      // Update UI
       setFiles(prevFiles => prevFiles.filter(file => file._id !== fileId));
       setCode("");
       setActiveFile(null);
@@ -203,55 +197,61 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
     }
   };
 
-
   return (
-    <div className="w-64 h-full bg-zinc-900 text-[#EAEAEA] flex flex-col p-4 border-r border-zinc-700 shadow-md">
-      <h2 className="text-2xl font-extrabold text-white mb-4 tracking-wide">CoCode</h2>
-      <h3 className="text-lg font-medium text-zinc-300 mb-4">
-        <span className="text-zinc-500">Room:</span> {roomName}
+    <div className="w-64 h-full bg-[#1A1A1A] text-[#FFFFFF] flex flex-col p-4 border-r border-[#1E90FF]/30 shadow-lg">
+      <div className="flex justify-between">
+        <h2 className="text-2xl font-extrabold mb-4 tracking-wide bg-gradient-to-r from-[#00FF85] to-[#1E90FF] bg-clip-text text-transparent">
+          CoCode
+        </h2>
+        <p className="text-xl font-bold text-[#FF0099] hover:text-red-500 cursor-pointer transition-all duration-200"
+          onClick={() => navigate('/joinroom')}
+        >Exit</p>
+      </div>
+      <h3 className="text-lg font-medium text-[#FFFFFF]/80 mb-4">
+        <span className="text-[#FFFFFF]/50">Room:</span> {roomName}
       </h3>
 
       <div className="flex justify-around gap-2">
-        <label className="flex items-center justify-center bg-blue-700 text-white py-2 px-3 rounded-md mb-4 hover:bg-black transition-all duration-200 cursor-pointer shadow hover:scale-105">
+        <label className="flex items-center justify-center bg-gradient-to-r from-[#1E90FF] to-[#00FF85] text-[#0D0D0D] py-2 px-3 rounded-lg mb-4 hover:from-[#1E90FF]/90 hover:to-[#00FF85]/90 transition-all duration-200 cursor-pointer shadow-lg hover:shadow-[#00FF85]/25 hover:-translate-y-0.5">
           <FaUpload />
           <input type="file" accept=".c,.cpp,.js,.py" className="hidden" onChange={handleFileUpload} />
         </label>
 
-        {/* Download Button */}
         <button
-          className="bg-blue-700 text-white px-3 py-2 rounded-md mb-4 shadow-md hover:bg-black hover:scale-105 transition-all duration-200 ease-in-out"
+          className="bg-gradient-to-r from-[#1E90FF] to-[#00FF85] text-[#0D0D0D] px-3 py-2 rounded-lg mb-4 shadow-lg hover:from-[#1E90FF]/90 hover:to-[#00FF85]/90 hover:shadow-[#00FF85]/25 hover:-translate-y-0.5 transition-all duration-200"
           onClick={handleDownload}
         >
           <FaDownload />
         </button>
 
-        {/* Create File Dialog */}
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="bg-blue-700 text-white px-3 py-2 rounded-md mb-4 shadow-md hover:bg-black hover:scale-105 transition-all duration-200 ease-in-out">
+            <button className="bg-gradient-to-r from-[#1E90FF] to-[#00FF85] text-[#0D0D0D] px-3 py-2 rounded-lg mb-4 shadow-lg hover:from-[#1E90FF]/90 hover:to-[#00FF85]/90 hover:shadow-[#00FF85]/25 hover:-translate-y-0.5 transition-all duration-200">
               <IoIosCreate />
-            </Button>
+            </button>
           </DialogTrigger>
 
-          <DialogContent className="sm:max-w-md bg-[#1E1E2F] text-white border border-[#7E3AF2] shadow-lg rounded-lg">
+          <DialogContent className="sm:max-w-md bg-[#1A1A1A] text-[#FFFFFF] border border-[#1E90FF]/30 shadow-lg rounded-lg">
             <DialogHeader>
-              <DialogTitle className="text-[#EAEAEA]">Create New File</DialogTitle>
+              <DialogTitle className="text-[#FFFFFF] text-xl font-bold bg-gradient-to-r from-[#00FF85] to-[#1E90FF] bg-clip-text text-transparent">
+                Create New File
+              </DialogTitle>
             </DialogHeader>
 
             <Input
-              className="text-black mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#7E3AF2]"
+              className="mt-2 px-4 py-3 rounded-xl bg-[#0D0D0D] border border-[#1E90FF]/50 text-[#FFFFFF] placeholder-[#FFFFFF]/40 focus:outline-none focus:ring-2 focus:ring-[#00FF85] focus:border-[#00FF85] transition-all duration-300"
               placeholder="Enter file name (e.g., main.js)"
               value={newFilename}
               onChange={(e) => setNewFilename(e.target.value)}
             />
 
             <DialogFooter className="mt-4">
-              <Button
+              <button
                 onClick={handleCreateFile}
-                className="bg-blue-400 text-white px-4 py-2 rounded-md shadow-md hover:bg-[#9B51E0] hover:scale-105 transition-all duration-200 ease-in-out"
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#00FF85] to-[#1E90FF] text-[#0D0D0D] font-bold hover:from-[#00FF85]/90 hover:to-[#1E90FF]/90 hover:shadow-lg hover:shadow-[#00FF85]/25 transform hover:-translate-y-1 transition-all duration-300"
               >
-                Create
-              </Button>
+                CREATE
+              </button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -260,12 +260,12 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
       {/* File List */}
       <div className="flex-1 overflow-y-auto mt-2 space-y-1">
         {files.map((file) => (
-          <div key={file._id} className="flex items-center justify-between">
+          <div key={file._id} className="flex items-center justify-between group">
             <div
-              className={`text-sm py-2 px-3 rounded-md w-full cursor-pointer transition-colors duration-150
+              className={`text-sm py-2 px-3 rounded-lg w-full cursor-pointer transition-all duration-200
                 ${activeFile === file._id
-                  ? "bg-[#4A00E0] text-white font-semibold"
-                  : "hover:bg-zinc-800 text-zinc-300"}`}
+                  ? "bg-gradient-to-r from-[#00FF85]/20 to-[#1E90FF]/20 border border-[#00FF85]/50 text-[#00FF85] font-semibold shadow-lg shadow-[#00FF85]/10"
+                  : "hover:bg-[#0D0D0D] text-[#FFFFFF]/70 hover:text-[#FFFFFF] border border-transparent"}`}
               onClick={() => handleFileClick(file)}
             >
               📄 {file.filename}
@@ -273,7 +273,7 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
 
             <MdDeleteForever
               size={22}
-              className="text-red-500 hover:text-red-700 cursor-pointer ml-2 transition-transform duration-150 hover:scale-110"
+              className="text-[#FF0099] hover:text-red-500 cursor-pointer ml-2 transition-all duration-200 hover:scale-110 opacity-0 group-hover:opacity-100"
               onClick={() => handleDeleteFile(file._id)}
             />
           </div>
@@ -282,27 +282,27 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
 
       {/* Room Info */}
       <div
-        className="mt-4 p-3 bg-zinc-800 rounded-lg text-sm cursor-pointer hover:ring-1 hover:ring-white transition-all"
+        className="mt-4 p-3 bg-[#0D0D0D] rounded-lg text-sm cursor-pointer border border-[#1E90FF]/30 hover:border-[#00FF85]/50 transition-all duration-200"
         onClick={() => navigator.clipboard.writeText(roomId)}
-        onClickCapture={()=> toast.success('Copy to clipboard')}
+        onClickCapture={() => toast.success('Copied to clipboard')}
       >
-        <p>🔑 <strong>Room ID:</strong> {roomId}</p>
+        <p className="text-[#FFFFFF]/80">🔑 <strong className="text-[#00FF85]">Room ID:</strong> <span className="text-[#FFFFFF]/60">{roomId}</span></p>
       </div>
 
       {/* Collaborators */}
       <div className="mt-4">
-        <h3 className="text-lg font-semibold text-white mb-2">Collaborators</h3>
+        <h3 className="text-lg font-semibold text-[#FFFFFF] mb-2 tracking-wide">Collaborators</h3>
         {collaborators.length > 0 ? (
           collaborators.map((user, index) => (
-            <div key={index} className="flex items-center space-x-2 mb-2">
-              <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-              <p className="text-sm text-zinc-300">{user.name}</p>
+            <div key={index} className="flex items-center space-x-2 mb-2 p-2 rounded-lg bg-[#0D0D0D] border border-[#1E90FF]/20">
+              <div className="w-3 h-3 rounded-full bg-[#00FF85] animate-pulse shadow-lg shadow-[#00FF85]/50"></div>
+              <p className="text-sm text-[#FFFFFF]/80">{user.name}</p>
             </div>
           ))
         ) : (
-          <p className="text-sm text-zinc-500">No collaborators yet</p>
+          <p className="text-sm text-[#FFFFFF]/40">No collaborators yet</p>
         )}
       </div>
     </div>
   );
-};
+};      
