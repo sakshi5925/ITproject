@@ -29,7 +29,7 @@ export function CompareDemo() {
         </h2>
         
         <p className="text-3xl text-right text-[#FFFFFF]/80 py-4 font-light">
-          But also… ew. Code with your crew instead.
+          Code with your crew instead.
         </p>
         
         <p className="text-base text-right text-[#FFFFFF]/60 py-6 leading-relaxed font-light">
