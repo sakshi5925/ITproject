@@ -1,21 +1,4 @@
-<h1 align="center">🚀 HackIIITV - Real-Time Collaborative Code Editor</h1>
-
-<p align="center">
-  <em><b>Team Name:</b> CSS</em><br/>
-  <em><b>Project:</b> CoCode (Real-Time Collaborative Code Editor) </em>
-</p>
-
-<hr/>
-
-<h3>👨‍💻 Team Members</h3>
-<ul>
-  <li>Srishti Chewale</li>
-  <li>Samadhan Erande</li>
-  <li>Sakshi</li>
-  <li>Suhani Kabia</li>
-</ul>
-
-<hr/>
+<h1 align="center">CoCode - Real-Time Collaborative Code Editor</h1>
 
 <h3>📌 Project Description</h3>
 <p>
@@ -82,7 +65,7 @@
 </ul>
 
 <h4>📦 Cloning the Repository</h4>
-<pre><code>git clone https://github.com/erandesamadhan2003/HackIIITV.git
+<pre><code>git clone https://github.com/sakshi5925/ITproject
 cd HackIIITV
 </code></pre>
 
@@ -124,6 +107,3 @@ npm run dev
 
 <hr/>
 
-<p align="center">
-  Built with  by Team CSS at HackIIITV 2025
-</p>
