@@ -5,7 +5,7 @@ import { Code } from "@/components/Code.jsx";
 import { OutputConsole } from "@/components/Output.jsx";
 import { Sidebar } from "@/components/Sidebar";
 
-const API_URL = "https://itproject.onrender.com";
+const API_URL = "https://itproject-nmnk.onrender.com";
 
 
 const socket = io(API_URL, {
