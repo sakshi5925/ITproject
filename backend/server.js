@@ -16,15 +16,21 @@ const server = createServer(app);
 
 app.use(express.json());
 
-const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174"
-  ],
-  credentials: true
-};
+// const corsOptions = {
+//   origin: [
+//     "http://localhost:5173",
+//     "https://i-tproject-nine.vercel.app/"
+//   ],
+//   credentials: true
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors({
+  origin: "*",
+  methods: ["GET","POST","PUT","DELETE"],
+  credentials: true
+}));
+
 app.use('/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/code', codeRoutes);
