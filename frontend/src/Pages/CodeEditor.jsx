@@ -9,7 +9,7 @@ const API_URL = "https://itproject.onrender.com";
 
 
 const socket = io(API_URL, {
-  transports: ["websocket"],
+  transports: ["websocket", "polling"],
   withCredentials: true
 });
 

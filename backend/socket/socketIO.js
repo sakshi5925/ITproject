@@ -2,12 +2,16 @@ import { Server } from "socket.io";
 import { Message } from "../modules/Message.js"; // Import Message model
 
 
-export const initSocket = (server) => { 
+export const initSocket = (server) => {
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:5173",
-            methods: ["GET", "POST", "PUT"],
-        },
+            origin: [
+                "http://localhost:5173",
+                "http://localhost:5174"
+            ],
+            methods: ["GET", "POST"],
+            credentials: true
+        }
     });
 
     io.on("connection", (socket) => {
@@ -24,7 +28,7 @@ export const initSocket = (server) => {
 
         socket.on("send_message", async (data) => {
             const { roomId, username, message } = data;
-            
+
             // Store message in database
             const newMessage = new Message({ roomId, username, message });
             await newMessage.save();
