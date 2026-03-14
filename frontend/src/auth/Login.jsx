@@ -6,6 +6,10 @@ import { toast } from "react-toastify";
 import { BackgroundLinesDemo } from '@/components/bg.jsx';
 import { Navbar } from '@/components/Navbar'
 
+
+const API_URL = "https://itproject-nmnk.onrender.com";
+
+
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +32,7 @@ export const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

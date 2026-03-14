@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import { Navbar } from '@/components/Navbar'
 
 
-const API_URL = "https://itproject.onrender.com";
+const API_URL = "https://itproject-nmnk.onrender.com";
 
 export const JoinRoom = () => {
   const [user, setUser] = useState(null);

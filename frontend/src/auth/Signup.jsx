@@ -4,6 +4,9 @@ import { toast } from 'react-toastify'
 import { validateEmail } from '../../utils/helper.js'
 import { Navbar } from '@/components/Navbar'
 
+const API_URL = "https://itproject-nmnk.onrender.com";
+
+
 export const Signup = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -42,7 +45,7 @@ export const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/auth/signup', {
+      const response = await fetch(`${API_URL}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: formData.username, email: formData.email, password: formData.password }),

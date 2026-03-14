@@ -9,6 +9,7 @@ import { FaDownload } from "react-icons/fa";
 import { IoIosCreate } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = "https://itproject-nmnk.onrender.com";
 
 export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, activeFile, setActiveFile }) => {
   const [files, setFiles] = useState([]);
@@ -23,7 +24,7 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/rooms/get/${roomId}`);
+        const response = await fetch(`${API_URL}/api/rooms/get/${roomId}`);
         if (!response.ok) throw new Error("Failed to fetch room details");
 
         const data = await response.json();
@@ -41,11 +42,16 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/rooms/file/get/${roomId}`);
+        const response = await fetch(`${API_URL}/api/rooms/file/get/${roomId}`);
         if (!response.ok) throw new Error("Failed to fetch Files");
 
         const data = await response.json();
-        console.log(data.files);
+
+        if (!data.files) {
+          setFiles([]);
+          return;
+        }
+
         setFiles(data.files);
       } catch (error) {
         console.error("Error fetching files:", error);
@@ -64,7 +70,7 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
     reader.onload = async (e) => {
       const fileContent = e.target.result;
       try {
-        const response = await fetch("http://localhost:3000/api/rooms/file/upload", {
+        const response = await fetch(`${API_URL}/api/rooms/file/upload`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -96,7 +102,7 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
   //Handles file selection
   const handleFileClick = async (file) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/rooms/file/specificFile/${file._id}`);
+      const response = await fetch(`${API_URL}/api/rooms/file/specificFile/${file._id}`);
       const data = await response.json();
       if (!response.ok) throw new Error("Failed to fetch single File");
       setActiveFile(data.file._id);
@@ -140,7 +146,7 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/rooms/file/create", {
+      const response = await fetch(`${API_URL}/api/rooms/file/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -175,7 +181,7 @@ export const Sidebar = ({ roomId, setCode, handleCodeChange, code, language, act
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/rooms/file/delete/${fileId}`, {
+      const response = await fetch(`${API_URL}/api/rooms/file/delete/${fileId}`, {
         method: "DELETE",
       });
 

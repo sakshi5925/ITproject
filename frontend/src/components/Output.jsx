@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+
+const API_URL = "https://itproject-nmnk.onrender.com";
+
 export const OutputConsole = ({ code, language }) => {
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -7,7 +10,7 @@ export const OutputConsole = ({ code, language }) => {
   const runCode = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/code/execute", {
+      const response = await fetch(`${API_URL}/code/execute`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code, language }),
