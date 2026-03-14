@@ -17,11 +17,13 @@ const server = createServer(app);
 app.use(express.json());
 
 const corsOption = {
-  origin: `http://localhost:5173`,
+  origin: [
+    "http://localhost:5173",
+    "https://itproject.vercel.app"
+  ],
   credentials: true,
 };
 
-app.use(cors(corsOption));
 app.use('/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/code', codeRoutes);

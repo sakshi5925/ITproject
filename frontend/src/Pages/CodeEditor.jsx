@@ -5,7 +5,13 @@ import { Code } from "@/components/Code.jsx";
 import { OutputConsole } from "@/components/Output.jsx";
 import { Sidebar } from "@/components/Sidebar";
 
-const socket = io.connect("http://localhost:3000");
+const API_URL = "https://itproject.onrender.com";
+
+
+const socket = io(API_URL, {
+  transports: ["websocket"],
+  withCredentials: true
+});
 
 export const CodeEditor = () => {
   const { roomId } = useParams();
@@ -40,7 +46,7 @@ export const CodeEditor = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:3000/auth/user/${userId}`, {
+        const response = await fetch(`${API_URL}/auth/user/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`, 
           },
@@ -92,7 +98,7 @@ export const CodeEditor = () => {
 
     // Send a request to update the database
     if (activeFileRef.current) {
-      fetch(`http://localhost:3000/api/rooms/file/update/${activeFileRef.current}`, {
+      fetch(`${API_URL}/api/rooms/file/update/${activeFileRef.current}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: newCode }),

@@ -16,6 +16,9 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
 import { Navbar } from '@/components/Navbar'
 
+
+const API_URL = "https://itproject.onrender.com";
+
 export const JoinRoom = () => {
   const [user, setUser] = useState(null);
   const [roomName, setRoomName] = useState("");
@@ -43,7 +46,7 @@ export const JoinRoom = () => {
     const newRoom = { roomId, roomName, ownerId: user.id, collaborators: [] };
 
     try {
-      const response = await fetch("http://localhost:3000/api/rooms", {
+      const response = await fetch(`${API_URL}/api/rooms`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newRoom),
@@ -68,7 +71,7 @@ export const JoinRoom = () => {
     }
     const userId = user.id;
     try {
-      const response = await fetch(`http://localhost:3000/api/rooms/join/${enteredRoomId}`, {
+      const response = await fetch(`${API_URL}/api/rooms/join/${enteredRoomId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
@@ -91,7 +94,7 @@ export const JoinRoom = () => {
   useEffect(() => {
     const fetchJoinedRooms = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/rooms/getrooms/${user?.id}`, {
+        const response = await fetch(`${API_URL}/api/rooms/getrooms/${user?.id}`, {
           credentials: 'include'
         });
         const data = await response.json();
